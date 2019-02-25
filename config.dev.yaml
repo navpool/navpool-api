@@ -1,0 +1,9 @@
+debug: true
+
+ssl: false
+
+sentry:
+  active: false
+
+server:
+  port: 8082
