@@ -21,7 +21,17 @@ type Config struct {
 		Domain string
 	}
 
+	Networks []Network
+
 	SelectedNetwork string
+}
+
+type Network struct {
+	Name     string
+	Host     string
+	Port     int
+	Username string
+	Password string
 }
 
 var instance *Config

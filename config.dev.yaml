@@ -7,3 +7,10 @@ sentry:
 
 server:
   port: 8082
+
+Networks:
+- name: mainnet
+  host: localhost
+  port: 8332
+  username: pool
+  password: password

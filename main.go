@@ -2,6 +2,8 @@ package main
 
 import (
 	"github.com/NavPool/navpool-api/config"
+	"github.com/NavPool/navpool-api/service/address"
+	"github.com/NavPool/navpool-api/service/communityFund"
 	"github.com/getsentry/raven-go"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-contrib/sentry"
@@ -42,6 +44,9 @@ func setupRouter() *gin.Engine {
 	r.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "Welcome to NavPool API!")
 	})
+
+	addressController := new(address.Controller)
+	r.GET("/address/:address", addressController.GetPoolAddress)
 
 	r.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Resource Not Found"})
