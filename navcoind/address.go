@@ -11,7 +11,23 @@ type PoolAddress struct {
 }
 
 type ValidateAddress struct {
-	IsValid bool `json:"isvalid"`
+	Valid           bool   `json:"isvalid"`
+	Address         string `json:"address"`
+	StakingAddress  string `json:"stakingaddress"`
+	SpendingAddress string `json:"spendingaddress"`
+	ScriptPubKey    string `json:"scriptpubkey"`
+	Mine            bool   `json:"ismine"`
+	Stakeable       bool   `json:"isstakeable"`
+	WatchOnly       bool   `json:"iswatchonly"`
+	Script          bool   `json:"isscript"`
+	ColdStaking     bool   `json:"iscoldstaking"`
+	PubKey          string `json:"pubkey"`
+	StakingPubKey   string `json:"stakingpubkey"`
+	SpendingPubKey  string `json:"spendingpubkey"`
+	Compressed      bool   `json:"iscompressed"`
+	Account         string `json:"account"`
+	HdKeyPath       string `json:"hdkeypath"`
+	HdMasterKey     string `json:"hdmasterkey"`
 }
 
 func (nav *Navcoind) GetPoolAddress(spendingAddress string) (poolAddress PoolAddress, err error) {

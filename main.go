@@ -46,7 +46,8 @@ func setupRouter() *gin.Engine {
 	})
 
 	addressController := new(address.Controller)
-	r.GET("/address/:address", addressController.GetPoolAddress)
+	r.GET("/address/:address/pool", addressController.GetPoolAddress)
+	r.GET("/address/:address/validate", addressController.GetValidateAddress)
 
 	r.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Resource Not Found"})

@@ -10,16 +10,25 @@ func GetPoolAddress(spendingAddress string) (poolAddress navcoind.PoolAddress, e
 	return nav.GetPoolAddress(spendingAddress)
 }
 
-func ValidateAddress(spendingAddress string) (valid bool) {
+func IsValid(address string) (valid bool) {
+	validateAddress, err := ValidateAddress(address)
+	if err != nil {
+		return false
+	}
+
+	return validateAddress.Valid
+}
+
+func ValidateAddress(spendingAddress string) (validateAddress navcoind.ValidateAddress, err error) {
 	nav, err := navcoind.New()
 	if err != nil {
-		return false
+		return
 	}
 
-	validateAddress, err := nav.GetValidateAddress(spendingAddress)
+	validateAddress, err = nav.GetValidateAddress(spendingAddress)
 	if err != nil {
-		return false
+		return
 	}
 
-	return validateAddress.IsValid
+	return validateAddress, err
 }
