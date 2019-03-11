@@ -6,6 +6,9 @@ import (
 
 func GetPoolAddress(spendingAddress string) (poolAddress navcoind.PoolAddress, err error) {
 	nav, err := navcoind.New()
+	if err != nil {
+		return
+	}
 
 	return nav.GetPoolAddress(spendingAddress)
 }
