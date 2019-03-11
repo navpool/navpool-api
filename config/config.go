@@ -8,8 +8,9 @@ import (
 )
 
 type Config struct {
-	Debug bool
-	Ssl   bool
+	Debug     bool
+	Ssl       bool
+	Signature bool
 
 	Sentry struct {
 		Active bool
