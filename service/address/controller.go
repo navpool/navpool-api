@@ -1,6 +1,7 @@
 package address
 
 import (
+	b64 "encoding/base64"
 	"errors"
 	"github.com/NavPool/navpool-api/config"
 	"github.com/NavPool/navpool-api/error"
@@ -35,7 +36,8 @@ func (controller *Controller) GetPoolAddress(c *gin.Context) {
 		return
 	}
 
-	verified, err := VerifySignature(spendingAddress, c.Param("signature"), "REGISTER FOR NAVPOOL")
+	signature, _ := b64.StdEncoding.DecodeString(c.Param("signature"))
+	verified, err := VerifySignature(spendingAddress, string(signature), "REGISTER FOR NAVPOOL")
 	if err != nil || verified == false {
 		error.HandleError(c, ErrSignatureNotValid, http.StatusBadRequest)
 		return
