@@ -35,3 +35,12 @@ func ValidateAddress(spendingAddress string) (validateAddress navcoind.ValidateA
 
 	return validateAddress, err
 }
+
+func VerifySignature(address string, signature string, message string) (valid bool, err error) {
+	nav, err := navcoind.New()
+	if err != nil {
+		return
+	}
+
+	return nav.VerifyMessage(address, signature, message)
+}

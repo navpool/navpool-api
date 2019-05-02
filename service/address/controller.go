@@ -35,6 +35,11 @@ func (controller *Controller) GetPoolAddress(c *gin.Context) {
 		return
 	}
 
+	verified, err := VerifySignature(spendingAddress, c.Param("signature"), "REGISTER FOR NAVPOOL")
+	if err != nil || verified == false {
+		error.HandleError(c, ErrSignatureNotValid, http.StatusBadRequest)
+	}
+
 	poolAddress, err := GetPoolAddress(spendingAddress)
 	if err != nil {
 		error.HandleError(c, ErrPoolAddressNotAvailable, http.StatusInternalServerError)
@@ -62,4 +67,5 @@ var (
 	ErrAddressIsColdStaking    = errors.New("address is a cold staking address")
 	ErrAddressIsMine           = errors.New("address is owned by the pool")
 	ErrPoolAddressNotAvailable = errors.New("pool address not available")
+	ErrSignatureNotValid       = errors.New("signature not valid")
 )
