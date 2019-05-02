@@ -38,6 +38,7 @@ func (controller *Controller) GetPoolAddress(c *gin.Context) {
 	verified, err := VerifySignature(spendingAddress, c.Param("signature"), "REGISTER FOR NAVPOOL")
 	if err != nil || verified == false {
 		error.HandleError(c, ErrSignatureNotValid, http.StatusBadRequest)
+		return
 	}
 
 	poolAddress, err := GetPoolAddress(spendingAddress)
