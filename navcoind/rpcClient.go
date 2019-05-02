@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/http/httputil"
 	"time"
 )
 
@@ -47,6 +48,13 @@ func newClient(host string, port int, user, password string) (c *rpcClient, err 
 }
 
 func (c *rpcClient) doTimeoutRequest(timer *time.Timer, req *http.Request) (*http.Response, error) {
+	if config.Get().Debug == true {
+		dump, err := httputil.DumpRequestOut(req, true)
+		if err == nil {
+			log.Printf("%q", dump)
+		}
+	}
+
 	type result struct {
 		resp *http.Response
 		err  error
@@ -55,6 +63,13 @@ func (c *rpcClient) doTimeoutRequest(timer *time.Timer, req *http.Request) (*htt
 	go func() {
 		resp, err := c.httpClient.Do(req)
 		done <- result{resp, err}
+
+		if config.Get().Debug == true {
+			dump, err := httputil.DumpResponse(resp, true)
+			if err == nil {
+				log.Printf("%q", dump)
+			}
+		}
 	}()
 
 	select {
