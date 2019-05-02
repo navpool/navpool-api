@@ -46,7 +46,7 @@ func setupRouter() *gin.Engine {
 	})
 
 	addressController := new(address.Controller)
-	r.GET("/address/:address/pool", addressController.GetPoolAddress)
+	r.GET("/address/:address/add/:signature", addressController.GetPoolAddress)
 	r.GET("/address/:address/validate", addressController.GetValidateAddress)
 
 	communityFundController := new(communityFund.Controller)
