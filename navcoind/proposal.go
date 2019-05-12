@@ -21,6 +21,21 @@ type Proposal struct {
 	State            int     `json:"state"`
 }
 
+type Votes struct {
+	Proposals []string
+}
+
+func (nav *Navcoind) ListProposalVotes(hash string) (votes []Votes, err error) {
+	response, err := nav.client.call("poolproposalvotelist", []interface{}{hash})
+	if err = HandleError(err, &response); err != nil {
+		return
+	}
+
+	err = json.Unmarshal(response.Result, &votes)
+
+	return votes, err
+}
+
 func (nav *Navcoind) GetProposal(hash string) (proposal Proposal, err error) {
 	response, err := nav.client.call("getproposal", []interface{}{hash})
 	if err = HandleError(err, &response); err != nil {

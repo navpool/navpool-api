@@ -3,6 +3,7 @@ package communityFund
 import (
 	"github.com/NavPool/navpool-api/config"
 	"github.com/NavPool/navpool-api/navcoind"
+	"log"
 )
 
 var acceptedVotes = map[string]bool{
@@ -11,7 +12,26 @@ var acceptedVotes = map[string]bool{
 	"remove": true,
 }
 
+func GetListProposalVotes(address string) (votes []navcoind.Votes, err error) {
+	nav, err := navcoind.New()
+	if err != nil {
+		return
+	}
+
+	return nav.ListProposalVotes(address)
+}
+
+func GetListPaymentRequestVotes(address string) (votes []navcoind.Votes, err error) {
+	nav, err := navcoind.New()
+	if err != nil {
+		return
+	}
+
+	return nav.ListPaymentRequestVotes(address)
+}
+
 func PostProposalVote(address string, hash string, vote string, signature string) (success bool, err error) {
+	log.Printf("Voting for %s by %s as %s", hash, address, vote)
 	nav, err := navcoind.New()
 	if err != nil {
 		return
@@ -26,6 +46,8 @@ func PostProposalVote(address string, hash string, vote string, signature string
 
 	_, err = nav.GetProposal(hash)
 	if err != nil {
+		log.Print("Failed to get Proposal")
+		log.Print(err)
 		return false, ErrProposalNotValid
 	}
 

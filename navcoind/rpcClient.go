@@ -5,11 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/NavPool/navpool-api/config"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"net/http/httputil"
 	"time"
 )
 
@@ -47,42 +45,8 @@ func newClient(host string, port int, user, password string) (c *rpcClient, err 
 	return
 }
 
-func (c *rpcClient) doTimeoutRequest(timer *time.Timer, req *http.Request) (*http.Response, error) {
-	if config.Get().Debug == true {
-		dump, err := httputil.DumpRequestOut(req, true)
-		if err == nil {
-			log.Printf("%q", dump)
-		}
-	}
-
-	type result struct {
-		resp *http.Response
-		err  error
-	}
-	done := make(chan result, 1)
-	go func() {
-		resp, err := c.httpClient.Do(req)
-		done <- result{resp, err}
-
-		if config.Get().Debug == true {
-			dump, err := httputil.DumpResponse(resp, true)
-			if err == nil {
-				log.Printf("%q", dump)
-			}
-		}
-	}()
-
-	select {
-	case r := <-done:
-		return r.resp, r.err
-	case <-timer.C:
-		return nil, errors.New("timeout reading data from server")
-	}
-}
-
 func (c *rpcClient) call(method string, params interface{}) (rr rpcResponse, err error) {
-	log.Printf("Navcoind: Method(%s) Params(%s)", method, params)
-	connectTimer := time.NewTimer(RPCCLIENT_TIMEOUT * time.Second)
+	//connectTimer := time.NewTimer(RPCCLIENT_TIMEOUT * time.Second)
 	rpcR := rpcRequest{method, params, time.Now().UnixNano(), "1.0"}
 	payloadBuffer := &bytes.Buffer{}
 	jsonEncoder := json.NewEncoder(payloadBuffer)
@@ -102,13 +66,10 @@ func (c *rpcClient) call(method string, params interface{}) (rr rpcResponse, err
 	req.Header.Add("Accept", "application/json")
 
 	if len(c.user) > 0 || len(c.password) > 0 {
-		if config.Get().Debug == true {
-			log.Printf("Navcoind: Username(%s), Password(%s)", c.user, c.password)
-		}
 		req.SetBasicAuth(c.user, c.password)
 	}
 
-	resp, err := c.doTimeoutRequest(connectTimer, req)
+	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return
 	}

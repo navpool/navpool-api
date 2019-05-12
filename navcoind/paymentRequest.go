@@ -18,6 +18,17 @@ type PaymentRequest struct {
 	StateChangedOnBlock string `json:"stateChangedOnBlock"`
 }
 
+func (nav *Navcoind) ListPaymentRequestVotes(hash string) (votes []Votes, err error) {
+	response, err := nav.client.call("poolpaymentrequestvotelist", []interface{}{hash})
+	if err = HandleError(err, &response); err != nil {
+		return
+	}
+
+	err = json.Unmarshal(response.Result, &votes)
+
+	return votes, err
+}
+
 func (nav *Navcoind) GetPaymentRequest(hash string) (paymentRequest PaymentRequest, err error) {
 	response, err := nav.client.call("getpaymentrequest", []interface{}{hash})
 	if err = HandleError(err, &response); err != nil {

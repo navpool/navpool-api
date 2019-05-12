@@ -51,6 +51,7 @@ func setupRouter() *gin.Engine {
 	r.GET("/address/:address/validate", addressController.GetValidateAddress)
 
 	communityFundController := new(communityFund.Controller)
+	r.GET("/community-fund/:type/list/:address", communityFundController.GetVotes)
 	r.POST("/community-fund/:type/vote", communityFundController.PostVote)
 
 	r.NoRoute(func(c *gin.Context) {
