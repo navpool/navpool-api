@@ -43,7 +43,7 @@ func setupRouter() *gin.Engine {
 	r.Use(errorHandler)
 
 	r.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "Welcome to NavPool API!")
+		c.String(http.StatusOK, "Welcome to NavPool Node API!")
 	})
 
 	addressController := new(address.Controller)
