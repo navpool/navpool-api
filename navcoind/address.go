@@ -2,6 +2,7 @@ package navcoind
 
 import (
 	"encoding/json"
+	"github.com/getsentry/raven-go"
 )
 
 type PoolAddress struct {
@@ -37,6 +38,9 @@ func (nav *Navcoind) GetPoolAddress(spendingAddress string) (poolAddress PoolAdd
 	}
 
 	err = json.Unmarshal(response.Result, &poolAddress)
+	if err != nil {
+		raven.CaptureErrorAndWait(err, nil)
+	}
 
 	return
 }
@@ -49,6 +53,7 @@ func (nav *Navcoind) GetValidateAddress(spendingAddress string) (validateAddress
 
 	err = json.Unmarshal(response.Result, &validateAddress)
 	if err != nil {
+		raven.CaptureErrorAndWait(err, nil)
 		return
 	}
 
