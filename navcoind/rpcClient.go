@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/getsentry/raven-go"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -46,12 +47,12 @@ func newClient(host string, port int, user, password string) (c *rpcClient, err 
 }
 
 func (c *rpcClient) call(method string, params interface{}) (rr rpcResponse, err error) {
-	//connectTimer := time.NewTimer(RPCCLIENT_TIMEOUT * time.Second)
 	rpcR := rpcRequest{method, params, time.Now().UnixNano(), "1.0"}
 	payloadBuffer := &bytes.Buffer{}
 	jsonEncoder := json.NewEncoder(payloadBuffer)
 	err = jsonEncoder.Encode(rpcR)
 	if err != nil {
+		raven.CaptureErrorAndWait(err, nil)
 		return
 	}
 
@@ -59,6 +60,7 @@ func (c *rpcClient) call(method string, params interface{}) (rr rpcResponse, err
 	log.Printf("Navcoind: Request(%s)", payloadBuffer)
 
 	if err != nil {
+		raven.CaptureErrorAndWait(err, nil)
 		return
 	}
 
@@ -71,6 +73,7 @@ func (c *rpcClient) call(method string, params interface{}) (rr rpcResponse, err
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
+		raven.CaptureErrorAndWait(err, nil)
 		return
 	}
 	defer resp.Body.Close()
@@ -78,10 +81,14 @@ func (c *rpcClient) call(method string, params interface{}) (rr rpcResponse, err
 	data, err := ioutil.ReadAll(resp.Body)
 	log.Printf("Navcoind: Response(%s)", data)
 	if err != nil {
+		raven.CaptureErrorAndWait(err, nil)
 		return
 	}
 
 	err = json.Unmarshal(data, &rr)
+	if err != nil {
+		raven.CaptureErrorAndWait(err, nil)
+	}
 
 	return
 }

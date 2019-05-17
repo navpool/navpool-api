@@ -2,6 +2,7 @@ package navcoind
 
 import (
 	"encoding/json"
+	"github.com/getsentry/raven-go"
 )
 
 type PaymentRequest struct {
@@ -25,6 +26,9 @@ func (nav *Navcoind) ListPaymentRequestVotes(hash string) (votes []Votes, err er
 	}
 
 	err = json.Unmarshal(response.Result, &votes)
+	if err != nil {
+		raven.CaptureErrorAndWait(err, nil)
+	}
 
 	return votes, err
 }
@@ -36,6 +40,9 @@ func (nav *Navcoind) GetPaymentRequest(hash string) (paymentRequest PaymentReque
 	}
 
 	err = json.Unmarshal(response.Result, &paymentRequest)
+	if err != nil {
+		raven.CaptureErrorAndWait(err, nil)
+	}
 
 	return paymentRequest, err
 }

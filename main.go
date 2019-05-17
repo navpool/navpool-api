@@ -6,37 +6,21 @@ import (
 	"github.com/NavPool/navpool-api/service/communityFund"
 	"github.com/getsentry/raven-go"
 	"github.com/gin-contrib/gzip"
-	"github.com/gin-contrib/sentry"
-	"github.com/gin-gonic/autotls"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 )
 
-func init() {
-	if config.Get().Sentry.Active == true {
-		dsn := config.Get().Sentry.DSN
-		log.Println("Sentry logging to ", dsn)
-		raven.SetDSN(dsn)
-	}
-}
-
 func main() {
-	r := setupRouter()
-
-	if config.Get().Ssl == false {
-		r.Run(":" + config.Get().Server.Port)
-	} else {
-		log.Fatal(autotls.Run(r, config.Get().Server.Domain))
+	if config.Get().Debug == false {
+		gin.SetMode(gin.ReleaseMode)
 	}
 
-	if config.Get().Sentry.Active == true {
-		r.Use(sentry.Recovery(raven.DefaultClient, false))
+	if config.Get().Sentry.Active {
+		raven.SetDSN(config.Get().Sentry.DSN)
 	}
-}
 
-func setupRouter() *gin.Engine {
-	r := gin.Default()
+	r := gin.New()
+
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
 	r.Use(gin.Recovery())
 	r.Use(networkSelect)
@@ -58,7 +42,7 @@ func setupRouter() *gin.Engine {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Resource Not Found"})
 	})
 
-	return r
+	_ = r.Run(":" + config.Get().Server.Port)
 }
 
 func networkSelect(c *gin.Context) {

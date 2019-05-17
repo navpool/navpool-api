@@ -2,6 +2,7 @@ package navcoind
 
 import (
 	"encoding/json"
+	"github.com/getsentry/raven-go"
 )
 
 type Proposal struct {
@@ -32,6 +33,9 @@ func (nav *Navcoind) ListProposalVotes(hash string) (votes []Votes, err error) {
 	}
 
 	err = json.Unmarshal(response.Result, &votes)
+	if err != nil {
+		raven.CaptureErrorAndWait(err, nil)
+	}
 
 	return votes, err
 }
@@ -43,6 +47,9 @@ func (nav *Navcoind) GetProposal(hash string) (proposal Proposal, err error) {
 	}
 
 	err = json.Unmarshal(response.Result, &proposal)
+	if err != nil {
+		raven.CaptureErrorAndWait(err, nil)
+	}
 
 	return proposal, err
 }
