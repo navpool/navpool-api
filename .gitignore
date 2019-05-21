@@ -13,3 +13,4 @@
 
 config.prod.yaml
 navpoolApi
+/vendor
