@@ -4,6 +4,7 @@ import (
 	"github.com/NavPool/navpool-api/config"
 	"github.com/NavPool/navpool-api/service/address"
 	"github.com/NavPool/navpool-api/service/communityFund"
+	"github.com/NavPool/navpool-api/service/info"
 	"github.com/getsentry/raven-go"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
@@ -37,6 +38,10 @@ func main() {
 	communityFundController := new(communityFund.Controller)
 	r.GET("/community-fund/:type/list/:address", communityFundController.GetVotes)
 	r.POST("/community-fund/:type/vote", communityFundController.PostVote)
+
+	infoController := new(info.Controller)
+	r.GET("/info", infoController.GetInfo)
+	r.GET("/info/staking", infoController.GetStakingInfo)
 
 	r.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Resource Not Found"})
