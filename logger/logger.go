@@ -1,0 +1,14 @@
+package logger
+
+import (
+	"github.com/NavPool/navpool-api/config"
+	"github.com/getsentry/raven-go"
+	"log"
+)
+
+func LogError(err error) {
+	log.Print(err)
+	if config.Get().Sentry.Active {
+		raven.CaptureErrorAndWait(err, nil)
+	}
+}
