@@ -1,6 +1,9 @@
 package info
 
-import "github.com/NavPool/navpool-api/navcoind"
+import (
+	"github.com/NavPool/navpool-api/logger"
+	"github.com/NavPool/navpool-api/navcoind"
+)
 
 func GetInfo() (info navcoind.Info, err error) {
 	nav, err := navcoind.New()
@@ -14,8 +17,14 @@ func GetInfo() (info navcoind.Info, err error) {
 func GetStakingInfo() (stakingInfo navcoind.StakingInfo, err error) {
 	nav, err := navcoind.New()
 	if err != nil {
+		logger.LogError(err)
 		return
 	}
 
-	return nav.GetStakingInfo()
+	stakingInfo, err = nav.GetStakingInfo()
+	if err != nil {
+		logger.LogError(err)
+	}
+
+	return
 }
