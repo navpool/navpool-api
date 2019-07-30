@@ -10,9 +10,12 @@ sentry:
 server:
   port: 8082
 
-Networks:
-- name: mainnet
+db:
+  dialect: postgres
   host: localhost
-  port: 8332
-  username: pool
-  password: password
+  port: 8432
+  username: navpool
+  password: navpool
+  dbname: navpool
+  sslMode: disable
+  logMode: true

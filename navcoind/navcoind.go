@@ -4,11 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NavPool/navpool-api/config"
-	"github.com/getsentry/raven-go"
-)
-
-const (
-	VERSION = 0.1
+	"github.com/NavPool/navpool-api/helpers"
 )
 
 type Navcoind struct {
@@ -23,7 +19,7 @@ func New() (*Navcoind, error) {
 
 	rpcClient, err := newClient(network.Host, network.Port, network.Username, network.Password)
 	if err != nil {
-		raven.CaptureErrorAndWait(err, nil)
+		helpers.LogError(err)
 		return nil, err
 	}
 
@@ -32,12 +28,12 @@ func New() (*Navcoind, error) {
 
 func HandleError(err error, r *rpcResponse) error {
 	if err != nil {
-		raven.CaptureErrorAndWait(err, nil)
+		helpers.LogError(err)
 		return err
 	}
 
 	if r.Err != nil {
-		raven.CaptureErrorAndWait(err, nil)
+		helpers.LogError(err)
 		rr := r.Err.(map[string]interface{})
 		return errors.New(fmt.Sprintf("(%v) %s", rr["code"].(float64), rr["message"].(string)))
 	}

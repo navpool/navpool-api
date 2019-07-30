@@ -1,4 +1,4 @@
-package error
+package helpers
 
 import "github.com/gin-gonic/gin"
 

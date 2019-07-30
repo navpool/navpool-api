@@ -22,9 +22,23 @@ type Config struct {
 		Domain string
 	}
 
-	Networks []Network
+	DB DBConfig `yaml:"db"`
 
+	Networks        []Network
 	SelectedNetwork string
+
+	Account string
+}
+
+type DBConfig struct {
+	Dialect  string `yaml:"dialect"`
+	Host     string `yaml:"host"`
+	Port     int    `yaml:"port"`
+	Username string `yaml:"username"`
+	Password string `yaml:"password"`
+	DbName   string `yaml:"dbName"`
+	SSLMode  string `yaml:"sslMode"`
+	LogMode  bool   `yaml:"logMode"`
 }
 
 type Network struct {

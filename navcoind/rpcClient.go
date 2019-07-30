@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/NavPool/navpool-api/helpers"
 	"github.com/getsentry/raven-go"
 	"io/ioutil"
 	"log"
@@ -52,7 +53,7 @@ func (c *rpcClient) call(method string, params interface{}) (rr rpcResponse, err
 	jsonEncoder := json.NewEncoder(payloadBuffer)
 	err = jsonEncoder.Encode(rpcR)
 	if err != nil {
-		raven.CaptureErrorAndWait(err, nil)
+		helpers.LogError(err)
 		return
 	}
 
@@ -73,7 +74,7 @@ func (c *rpcClient) call(method string, params interface{}) (rr rpcResponse, err
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		raven.CaptureErrorAndWait(err, nil)
+		helpers.LogError(err)
 		return
 	}
 	defer resp.Body.Close()
@@ -81,13 +82,13 @@ func (c *rpcClient) call(method string, params interface{}) (rr rpcResponse, err
 	data, err := ioutil.ReadAll(resp.Body)
 	log.Printf("Navcoind: Response(%s)", data)
 	if err != nil {
-		raven.CaptureErrorAndWait(err, nil)
+		helpers.LogError(err)
 		return
 	}
 
 	err = json.Unmarshal(data, &rr)
 	if err != nil {
-		raven.CaptureErrorAndWait(err, nil)
+		helpers.LogError(err)
 	}
 
 	return

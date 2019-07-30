@@ -1,4 +1,4 @@
-package logger
+package helpers
 
 import (
 	"github.com/NavPool/navpool-api/config"

@@ -2,46 +2,57 @@ package main
 
 import (
 	"github.com/NavPool/navpool-api/config"
-	"github.com/NavPool/navpool-api/service/address"
-	"github.com/NavPool/navpool-api/service/communityFund"
-	"github.com/NavPool/navpool-api/service/info"
+	"github.com/NavPool/navpool-api/controllers"
+	"github.com/NavPool/navpool-api/database"
+	"github.com/NavPool/navpool-api/middleware"
 	"github.com/getsentry/raven-go"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
 func main() {
-	if config.Get().Debug == false {
-		gin.SetMode(gin.ReleaseMode)
-	}
+	setReleaseMode()
+
+	database.Migrate()
 
 	if config.Get().Sentry.Active {
-		raven.SetDSN(config.Get().Sentry.DSN)
+		_ = raven.SetDSN(config.Get().Sentry.DSN)
 	}
 
 	r := gin.New()
 
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
 	r.Use(gin.Recovery())
-	r.Use(networkSelect)
-	r.Use(errorHandler)
+	r.Use(middleware.Authentication)
+	r.Use(middleware.NetworkSelect)
+	r.Use(middleware.ErrorHandler)
 
 	r.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "Welcome to NavPool Node API!")
 	})
 
-	addressController := new(address.Controller)
-	r.GET("/address/:address/add/:signature", addressController.GetPoolAddress)
-	r.GET("/address/:address/validate", addressController.GetValidateAddress)
+	userController := new(controllers.UserController)
+	r.POST("/account", userController.Create)
+	r.GET("/account/:id", userController.Read)
 
-	communityFundController := new(communityFund.Controller)
-	r.GET("/community-fund/:type/list/:address", communityFundController.GetVotes)
-	r.POST("/community-fund/:type/vote", communityFundController.PostVote)
-
-	infoController := new(info.Controller)
+	infoController := new(controllers.InfoController)
 	r.GET("/info", infoController.GetInfo)
 	r.GET("/info/staking", infoController.GetStakingInfo)
+
+	authenticated := r.Group("/auth/:apikey")
+
+	addressController := new(controllers.AddressController)
+	authenticated.POST("/address/:spendingAddress", addressController.Create)
+	authenticated.GET("/address/:address/add/:signature", addressController.GetPoolAddress)
+	authenticated.GET("/address/:address/validate", addressController.GetValidateAddress)
+
+	communityFundController := new(controllers.CommunityFundController)
+	authenticated.GET("/community-fund/proposal/list/:address", communityFundController.GetProposalVotes)
+	authenticated.GET("/community-fund/payment-request/list/:address", communityFundController.GetPaymentRequestVotes)
+	authenticated.POST("/community-fund/proposal/vote", communityFundController.PostProposalVote)
+	authenticated.POST("/community-fund/payment-request/vote", communityFundController.PostPaymentRequestVote)
 
 	r.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Resource Not Found"})
@@ -50,27 +61,12 @@ func main() {
 	_ = r.Run(":" + config.Get().Server.Port)
 }
 
-func networkSelect(c *gin.Context) {
-	switch network := c.GetHeader("Network"); network {
-	case "testnet":
-		config.Get().SelectedNetwork = network
-		break
-	case "mainnet":
-		config.Get().SelectedNetwork = network
-		break
-	default:
-		config.Get().SelectedNetwork = "mainnet"
+func setReleaseMode() {
+	if config.Get().Debug == false {
+		log.Printf("Mode: %s", gin.ReleaseMode)
+		gin.SetMode(gin.ReleaseMode)
+	} else {
+		log.Printf("Mode: %s", gin.DebugMode)
+		gin.SetMode(gin.DebugMode)
 	}
-
-	c.Header("X-Network", config.Get().SelectedNetwork)
-}
-
-func errorHandler(c *gin.Context) {
-	c.Next()
-
-	if len(c.Errors) == 0 {
-		return
-	}
-
-	c.AbortWithStatusJSON(http.StatusBadRequest, c.Errors)
 }
