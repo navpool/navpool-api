@@ -1,0 +1,29 @@
+debug: true
+
+ssl: false
+
+signature: false
+
+sentry:
+  active: false
+
+server:
+  port: 8082
+
+db:
+  dialect: postgres
+  host: localhost
+  port: 8432
+  username: navpool
+  password: navpool
+  dbname: navpool
+  sslMode: disable
+  logMode: true
+
+Networks:
+  - name: devnet
+    host: localhost
+    port: 8332
+    username: username
+    password: password
+    passphrase: passphrase

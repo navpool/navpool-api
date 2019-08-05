@@ -8,14 +8,14 @@ sentry:
   active: false
 
 server:
-  port: 8082
+  port: 8080
 
 db:
   dialect: postgres
   host: localhost
   port: 8432
-  username: navpool
-  password: navpool
-  dbname: navpool
+  username: postgres
+  password: password
+  dbname: postgres
   sslMode: disable
   logMode: true

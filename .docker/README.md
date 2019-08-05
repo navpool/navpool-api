@@ -1,12 +1,8 @@
 Build
 
 ```
-docker build -t navpool .
-```
+docker run --name navpool -e POSTGRES_PASSWORD=password -d postgres
 
-Run
-
-```
-docker run -d --restart-always -p 85432:5432 navpool
+docker run -d -p 8432:5432/ navpool
 ````` 
     
