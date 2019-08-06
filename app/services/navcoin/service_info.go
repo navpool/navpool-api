@@ -1,20 +1,12 @@
-package navcoind
+package navcoin
 
 import (
 	"encoding/json"
 	"github.com/NavPool/navpool-api/app/helpers"
 )
 
-type Info struct{}
-
-func (i Info) GetInfo() (info info, err error) {
-	nav, err := NewNavcoind()
-	if err != nil {
-		helpers.LogError(err)
-		return
-	}
-
-	response, err := nav.client.call("getinfo", nil)
+func (nav *Navcoin) GetInfo() (info Info, err error) {
+	response, err := nav.Client.call("getinfo", nil)
 	if err = HandleError(err, &response); err != nil {
 		return
 	}
@@ -27,14 +19,8 @@ func (i Info) GetInfo() (info info, err error) {
 	return
 }
 
-func (i Info) GetStakingInfo() (stakingInfo stakingInfo, err error) {
-	nav, err := NewNavcoind()
-	if err != nil {
-		helpers.LogError(err)
-		return
-	}
-
-	response, err := nav.client.call("getstakinginfo", nil)
+func (nav *Navcoin) GetStakingInfo() (stakingInfo StakingInfo, err error) {
+	response, err := nav.Client.call("getstakinginfo", nil)
 	if err = HandleError(err, &response); err != nil {
 		return
 	}
@@ -47,7 +33,7 @@ func (i Info) GetStakingInfo() (stakingInfo stakingInfo, err error) {
 	return
 }
 
-type info struct {
+type Info struct {
 	Version            int           `json:"version"`
 	ProtocolVersion    int           `json:"protocolversion"`
 	WalletVersion      int           `json:"walletversion"`
@@ -75,7 +61,7 @@ type communityFund struct {
 	Locked    float64 `json:"locked"`
 }
 
-type stakingInfo struct {
+type StakingInfo struct {
 	Enabled          bool    `json:"enabled"`
 	Staking          bool    `json:"staking"`
 	Errors           string  `json:"errors"`

@@ -7,7 +7,6 @@ import (
 	"github.com/NavPool/navpool-api/app/helpers"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"log"
 	"time"
 )
 
@@ -41,7 +40,6 @@ func CreateConnection() (err error) {
 	DB.DB().SetConnMaxLifetime(time.Hour)
 
 	if config.Get().Debug == true {
-		log.Println("Database LogMode: true")
 		DB.LogMode(config.Get().DB.LogMode)
 	}
 

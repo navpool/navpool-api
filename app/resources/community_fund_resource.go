@@ -4,7 +4,7 @@ import (
 	"errors"
 	"github.com/NavPool/navpool-api/app/config"
 	"github.com/NavPool/navpool-api/app/helpers"
-	"github.com/NavPool/navpool-api/app/services/navcoind"
+	"github.com/NavPool/navpool-api/app/services/navcoin"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -12,7 +12,7 @@ import (
 type CommunityFundResource struct{}
 
 func (r *CommunityFundResource) GetProposalVotes(c *gin.Context) {
-	votes, err := navcoind.CommunityFund{}.ListProposalVotes(c.Param("address"))
+	votes, err := navcoin.NewNavcoin(nil).ListProposalVotes(c.Param("address"))
 
 	if err != nil {
 		if err == ErrProposalNotValid {
@@ -27,7 +27,7 @@ func (r *CommunityFundResource) GetProposalVotes(c *gin.Context) {
 }
 
 func (r *CommunityFundResource) GetPaymentRequestVotes(c *gin.Context) {
-	votes, err := navcoind.CommunityFund{}.ListPaymentRequestVotes(c.Param("address"))
+	votes, err := navcoin.NewNavcoin(nil).ListPaymentRequestVotes(c.Param("address"))
 
 	if err != nil {
 		if err == ErrProposalNotValid {
@@ -50,20 +50,22 @@ func (r *CommunityFundResource) PostProposalVote(c *gin.Context) {
 		return
 	}
 
-	if !navcoind.AcceptedVotes[vote.Vote] {
+	if !navcoin.AcceptedVotes[vote.Vote] {
 		helpers.HandleError(c, ErrVoteNotValid, http.StatusBadRequest)
 		return
 	}
 
+	nav := navcoin.NewNavcoin(nil)
+
 	if config.Get().Signature {
-		validSignature, err := navcoind.Signature{}.VerifySignature(vote.SpendingAddress, vote.Signature, vote.SpendingAddress+vote.Hash+vote.Vote)
+		validSignature, err := nav.VerifyMessage(vote.SpendingAddress, vote.Signature, vote.SpendingAddress+vote.Hash+vote.Vote)
 		if err != nil || validSignature == false {
 			helpers.HandleError(c, err, http.StatusBadRequest)
 			return
 		}
 	}
 
-	success, err := navcoind.CommunityFund{}.ProposalVote(vote.SpendingAddress, vote.Hash, vote.Vote)
+	success, err := nav.ProposalVote(vote.SpendingAddress, vote.Hash, vote.Vote)
 	if err != nil {
 		if err == ErrProposalNotValid {
 			helpers.HandleError(c, err, http.StatusBadRequest)
@@ -85,23 +87,22 @@ func (r *CommunityFundResource) PostPaymentRequestVote(c *gin.Context) {
 		return
 	}
 
-	communityFundService := navcoind.CommunityFund{}
-	signatureService := navcoind.Signature{}
-
-	if !navcoind.AcceptedVotes[vote.Vote] {
+	if !navcoin.AcceptedVotes[vote.Vote] {
 		helpers.HandleError(c, ErrVoteNotValid, http.StatusBadRequest)
 		return
 	}
 
+	nav := navcoin.NewNavcoin(nil)
+
 	if config.Get().Signature {
-		validSignature, err := signatureService.VerifySignature(vote.SpendingAddress, vote.Signature, vote.SpendingAddress+vote.Hash+vote.Vote)
+		validSignature, err := nav.VerifyMessage(vote.SpendingAddress, vote.Signature, vote.SpendingAddress+vote.Hash+vote.Vote)
 		if err != nil || validSignature == false {
 			helpers.HandleError(c, err, http.StatusBadRequest)
 			return
 		}
 	}
 
-	success, err := communityFundService.PaymentRequestVote(vote.SpendingAddress, vote.Hash, vote.Vote)
+	success, err := nav.PaymentRequestVote(vote.SpendingAddress, vote.Hash, vote.Vote)
 	if err != nil {
 		if err == ErrPaymentRequestNotValid {
 			helpers.HandleError(c, err, http.StatusBadRequest)

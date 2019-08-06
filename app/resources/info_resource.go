@@ -3,7 +3,7 @@ package resource
 import (
 	"errors"
 	"github.com/NavPool/navpool-api/app/helpers"
-	"github.com/NavPool/navpool-api/app/services/navcoind"
+	"github.com/NavPool/navpool-api/app/services/navcoin"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -11,7 +11,7 @@ import (
 type InfoResource struct{}
 
 func (r *InfoResource) GetInfo(c *gin.Context) {
-	getInfo, err := navcoind.Info{}.GetInfo()
+	getInfo, err := navcoin.NewNavcoin(nil).GetInfo()
 	if err != nil {
 		helpers.HandleError(c, ErrCouldNotGetInfo, http.StatusBadRequest)
 		return
@@ -21,7 +21,7 @@ func (r *InfoResource) GetInfo(c *gin.Context) {
 }
 
 func (r *InfoResource) GetStakingInfo(c *gin.Context) {
-	getStakingInfo, err := navcoind.Info{}.GetStakingInfo()
+	getStakingInfo, err := navcoin.NewNavcoin(nil).GetStakingInfo()
 	if err != nil {
 		helpers.HandleError(c, ErrCouldNotGetStakingInfo, http.StatusBadRequest)
 		return

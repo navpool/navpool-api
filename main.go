@@ -25,11 +25,11 @@ func main() {
 }
 
 func setReleaseMode() {
-	if config.Get().Debug == false {
-		log.Printf("Mode: %s", gin.ReleaseMode)
-		gin.SetMode(gin.ReleaseMode)
-	} else {
-		log.Printf("Mode: %s", gin.DebugMode)
+	if config.Get().Debug == true {
 		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
 	}
+
+	log.Printf("Mode: %s", gin.Mode())
 }

@@ -2,7 +2,6 @@ package routes
 
 import (
 	"github.com/NavPool/navpool-api/app/middleware"
-	"github.com/NavPool/navpool-api/app/middleware/authorization"
 	resource "github.com/NavPool/navpool-api/app/resources"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
@@ -28,7 +27,7 @@ func Routes() *gin.Engine {
 	})
 
 	protected := r.Group("")
-	protected.Use(authorization.Authorization)
+	//protected.Use(authorization.Authorization)
 
 	protected.GET("/info", infoResource.GetInfo)
 	protected.GET("/info/staking", infoResource.GetStakingInfo)

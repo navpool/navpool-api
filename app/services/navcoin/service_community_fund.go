@@ -1,20 +1,12 @@
-package navcoind
+package navcoin
 
 import (
 	"encoding/json"
 	"github.com/NavPool/navpool-api/app/helpers"
 )
 
-type CommunityFund struct{}
-
-func (c CommunityFund) GetProposal(hash string) (proposal Proposal, err error) {
-	nav, err := NewNavcoind()
-	if err != nil {
-		helpers.LogError(err)
-		return
-	}
-
-	response, err := nav.client.call("getproposal", []interface{}{hash})
+func (nav *Navcoin) GetProposal(hash string) (proposal Proposal, err error) {
+	response, err := nav.Client.call("getproposal", []interface{}{hash})
 	if err = HandleError(err, &response); err != nil {
 		return
 	}
@@ -27,14 +19,8 @@ func (c CommunityFund) GetProposal(hash string) (proposal Proposal, err error) {
 	return
 }
 
-func (c CommunityFund) GetPaymentRequest(hash string) (paymentRequest PaymentRequest, err error) {
-	nav, err := NewNavcoind()
-	if err != nil {
-		helpers.LogError(err)
-		return
-	}
-
-	response, err := nav.client.call("getpaymentrequest", []interface{}{hash})
+func (nav *Navcoin) GetPaymentRequest(hash string) (paymentRequest PaymentRequest, err error) {
+	response, err := nav.Client.call("getpaymentrequest", []interface{}{hash})
 	if err = HandleError(err, &response); err != nil {
 		return
 	}
@@ -47,14 +33,8 @@ func (c CommunityFund) GetPaymentRequest(hash string) (paymentRequest PaymentReq
 	return paymentRequest, err
 }
 
-func (c CommunityFund) ListProposalVotes(hash string) (votes []Votes, err error) {
-	nav, err := NewNavcoind()
-	if err != nil {
-		helpers.LogError(err)
-		return
-	}
-
-	response, err := nav.client.call("poolproposalvotelist", []interface{}{hash})
+func (nav *Navcoin) ListProposalVotes(hash string) (votes []Votes, err error) {
+	response, err := nav.Client.call("poolproposalvotelist", []interface{}{hash})
 	if err = HandleError(err, &response); err != nil {
 		return
 	}
@@ -67,14 +47,8 @@ func (c CommunityFund) ListProposalVotes(hash string) (votes []Votes, err error)
 	return votes, err
 }
 
-func (c CommunityFund) ListPaymentRequestVotes(hash string) (votes []Votes, err error) {
-	nav, err := NewNavcoind()
-	if err != nil {
-		helpers.LogError(err)
-		return
-	}
-
-	response, err := nav.client.call("poolpaymentrequestvotelist", []interface{}{hash})
+func (nav *Navcoin) ListPaymentRequestVotes(hash string) (votes []Votes, err error) {
+	response, err := nav.Client.call("poolpaymentrequestvotelist", []interface{}{hash})
 	if err = HandleError(err, &response); err != nil {
 		return
 	}
@@ -87,14 +61,8 @@ func (c CommunityFund) ListPaymentRequestVotes(hash string) (votes []Votes, err 
 	return votes, err
 }
 
-func (c CommunityFund) ProposalVote(address string, hash string, vote string) (success bool, err error) {
-	nav, err := NewNavcoind()
-	if err != nil {
-		helpers.LogError(err)
-		return
-	}
-
-	response, err := nav.client.call("poolproposalvote", []interface{}{address, hash, vote})
+func (nav *Navcoin) ProposalVote(address string, hash string, vote string) (success bool, err error) {
+	response, err := nav.Client.call("poolproposalvote", []interface{}{address, hash, vote})
 	if err = HandleError(err, &response); err != nil {
 		return false, err
 	}
@@ -102,14 +70,8 @@ func (c CommunityFund) ProposalVote(address string, hash string, vote string) (s
 	return true, err
 }
 
-func (c CommunityFund) PaymentRequestVote(address string, hash string, vote string) (success bool, err error) {
-	nav, err := NewNavcoind()
-	if err != nil {
-		helpers.LogError(err)
-		return
-	}
-
-	response, err := nav.client.call("poolpaymentrequestvote", []interface{}{address, hash, vote})
+func (nav *Navcoin) PaymentRequestVote(address string, hash string, vote string) (success bool, err error) {
+	response, err := nav.Client.call("poolpaymentrequestvote", []interface{}{address, hash, vote})
 	if err = HandleError(err, &response); err != nil {
 		return false, err
 	}

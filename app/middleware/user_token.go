@@ -2,16 +2,16 @@ package middleware
 
 import (
 	"errors"
+	"github.com/NavPool/navpool-api/app/container"
 	"github.com/NavPool/navpool-api/app/helpers"
 	"github.com/NavPool/navpool-api/app/model/user"
-	"github.com/NavPool/navpool-api/app/session"
 	"github.com/gin-gonic/gin"
 	"log"
 )
 
 func UserToken(c *gin.Context) {
 	token := c.GetHeader("api-token")
-	account := session.Account
+	account := container.Container.Account
 
 	if len(token) != 0 {
 		user, err := model.UserRepository().GetByToken(account, token)
@@ -21,7 +21,7 @@ func UserToken(c *gin.Context) {
 			return
 		}
 
-		session.User = *user
+		container.Container.User = *user
 	}
 }
 

@@ -7,9 +7,9 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/NavPool/navpool-api/app/container"
 	"github.com/NavPool/navpool-api/app/helpers"
 	"github.com/NavPool/navpool-api/app/model/account"
-	"github.com/NavPool/navpool-api/app/session"
 	"github.com/gin-gonic/gin"
 	"log"
 	"strings"
@@ -44,7 +44,7 @@ func Authorization(c *gin.Context) {
 		return
 	}
 
-	session.Account = *account
+	container.Container.Account = *account
 }
 
 func getAuthorization(authHeader string) (username string, digest string, err error) {

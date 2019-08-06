@@ -12,3 +12,9 @@ func LogError(err error) {
 		raven.CaptureErrorAndWait(err, nil)
 	}
 }
+
+func Debugf(format string, v ...interface{}) {
+	if config.Get().Debug {
+		log.Printf(format, v...)
+	}
+}

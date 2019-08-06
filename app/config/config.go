@@ -5,6 +5,8 @@ import (
 	"github.com/spf13/viper"
 	"log"
 	"os"
+	"path/filepath"
+	"runtime"
 	"sync"
 )
 
@@ -24,12 +26,12 @@ type Config struct {
 		Domain string
 	}
 
-	DB DBConfig `yaml:"db"`
+	DB DbConfig `yaml:"db"`
 
-	Networks []Network
+	Networks []Network `yaml:"networks"`
 }
 
-type DBConfig struct {
+type DbConfig struct {
 	Dialect  string `yaml:"dialect"`
 	Host     string `yaml:"host"`
 	Port     int    `yaml:"port"`
@@ -53,24 +55,18 @@ var once sync.Once
 
 func Get() *Config {
 	once.Do(func() {
-		var env = "prod"
+		_, b, _, _ := runtime.Caller(0)
+		configPath := filepath.Dir(b)
+		viper.AddConfigPath(configPath + "/../..")
 
-		if flag.Lookup("test.v") != nil {
-			env = "test"
-		} else if len(os.Args) > 1 {
-			env = os.Args[1]
-		}
-
+		env := getEnv()
 		viper.SetConfigName("config." + env)
-		viper.AddConfigPath(".")
-
-		log.Printf("Creating Config: %s", env)
 
 		instance = &Config{Env: env}
-
 		if err := viper.ReadInConfig(); err != nil {
 			log.Fatal(err)
 		}
+		log.Printf("Using config: %s", viper.ConfigFileUsed())
 
 		if err := viper.Unmarshal(instance); err != nil {
 			log.Fatal(err)
@@ -78,4 +74,16 @@ func Get() *Config {
 	})
 
 	return instance
+}
+
+func getEnv() string {
+	env := "prod"
+
+	if flag.Lookup("test.v") != nil {
+		env = "test"
+	} else if len(os.Args) > 1 {
+		env = os.Args[1]
+	}
+
+	return env
 }

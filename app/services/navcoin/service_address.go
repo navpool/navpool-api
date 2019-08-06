@@ -1,20 +1,12 @@
-package navcoind
+package navcoin
 
 import (
 	"encoding/json"
 	"github.com/NavPool/navpool-api/app/helpers"
 )
 
-type Address struct{}
-
-func (a Address) GetPoolAddress(spendingAddress string) (poolAddress PoolAddress, err error) {
-	nav, err := NewNavcoind()
-	if err != nil {
-		helpers.LogError(err)
-		return
-	}
-
-	response, err := nav.client.call("newpooladdress", []interface{}{spendingAddress})
+func (nav *Navcoin) NewPoolAddress(spendingAddress string) (poolAddress PoolAddress, err error) {
+	response, err := nav.Client.call("newpooladdress", []interface{}{spendingAddress})
 	if err = HandleError(err, &response); err != nil {
 		return
 	}
@@ -27,14 +19,8 @@ func (a Address) GetPoolAddress(spendingAddress string) (poolAddress PoolAddress
 	return
 }
 
-func (a Address) GetValidateAddress(spendingAddress string) (validateAddress ValidateAddress, err error) {
-	nav, err := NewNavcoind()
-	if err != nil {
-		helpers.LogError(err)
-		return
-	}
-
-	response, err := nav.client.call("validateaddress", []interface{}{spendingAddress})
+func (nav *Navcoin) ValidateAddress(spendingAddress string) (validateAddress ValidateAddress, err error) {
+	response, err := nav.Client.call("validateaddress", []interface{}{spendingAddress})
 	if err = HandleError(err, &response); err != nil {
 		return
 	}

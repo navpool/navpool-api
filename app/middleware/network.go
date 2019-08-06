@@ -1,19 +1,32 @@
 package middleware
 
 import (
-	"github.com/NavPool/navpool-api/app/session"
+	"errors"
+	"github.com/NavPool/navpool-api/app/config"
+	"github.com/NavPool/navpool-api/app/container"
+	"github.com/NavPool/navpool-api/app/helpers"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func NetworkSelect(c *gin.Context) {
-	switch network := c.GetHeader("Network"); network {
-	case "testnet":
-	case "mainnet":
-		session.Network = network
-		break
-	default:
-		session.Network = "mainnet"
+	network := c.GetHeader("Network")
+	if network == "" {
+		network = "mainnet"
 	}
 
-	c.Header("X-Network", session.Network)
+	networks := config.Get().Networks
+	for i, _ := range networks {
+		if networks[i].Name == network {
+			container.Container.Network = &networks[i]
+			c.Header("X-Network", container.Container.Network.Name)
+			return
+		}
+	}
+
+	helpers.HandleError(c, ErrNetworkNotFound, http.StatusBadRequest)
 }
+
+var (
+	ErrNetworkNotFound = errors.New("Network not found")
+)
