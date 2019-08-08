@@ -11,15 +11,13 @@ type Navcoin struct {
 	Client *Client
 }
 
-func NewNavcoin(client *Client) *Navcoin {
-	if client == nil {
-		client = NewClient(
-			container.Container.Network.Host,
-			container.Container.Network.Port,
-			container.Container.Network.Username,
-			container.Container.Network.Password,
-		)
-	}
+func NewNavcoin() *Navcoin {
+	client := NewClient(
+		container.Container.Network.Host,
+		container.Container.Network.Port,
+		container.Container.Network.Username,
+		container.Container.Network.Password,
+	)
 
 	return &Navcoin{client}
 }

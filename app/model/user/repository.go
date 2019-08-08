@@ -18,16 +18,16 @@ func UserRepository() *repo {
 	}
 }
 
-func (p *repo) CreateUser(account model.Account) (*User, error) {
+func (r *repo) CreateUser(account model.Account) (*User, error) {
 	var user = &User{Account: account.ID, Token: generateToken()}
-	err := database.GetConnection().Create(&user).Error
+	err := r.DB.Create(&user).Error
 
 	return user, err
 }
 
-func (p *repo) GetByToken(account model.Account, token string) (*User, error) {
+func (r *repo) GetByToken(account model.Account, token string) (*User, error) {
 	var user = new(User)
-	err := database.GetConnection().Where(&User{Account: account.ID, Token: token}).First(&user).Error
+	err := r.DB.Where(&User{Account: account.ID, Token: token}).First(&user).Error
 
 	return user, err
 }

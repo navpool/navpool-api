@@ -10,7 +10,8 @@ import (
 func Migrate() {
 	database.GetConnection().AutoMigrate(
 		&model.Account{},
-		&user.User{})
+		&user.User{},
+	)
 
 	if config.Get().Env == "dev" {
 		model.AccountRepository().Create("admin", "admin", true)

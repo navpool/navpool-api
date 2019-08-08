@@ -12,7 +12,7 @@ import (
 type CommunityFundResource struct{}
 
 func (r *CommunityFundResource) GetProposalVotes(c *gin.Context) {
-	votes, err := navcoin.NewNavcoin(nil).ListProposalVotes(c.Param("address"))
+	votes, err := navcoin.NewNavcoin().ListProposalVotes(c.Param("address"))
 
 	if err != nil {
 		if err == ErrProposalNotValid {
@@ -27,7 +27,7 @@ func (r *CommunityFundResource) GetProposalVotes(c *gin.Context) {
 }
 
 func (r *CommunityFundResource) GetPaymentRequestVotes(c *gin.Context) {
-	votes, err := navcoin.NewNavcoin(nil).ListPaymentRequestVotes(c.Param("address"))
+	votes, err := navcoin.NewNavcoin().ListPaymentRequestVotes(c.Param("address"))
 
 	if err != nil {
 		if err == ErrProposalNotValid {
@@ -55,7 +55,7 @@ func (r *CommunityFundResource) PostProposalVote(c *gin.Context) {
 		return
 	}
 
-	nav := navcoin.NewNavcoin(nil)
+	nav := navcoin.NewNavcoin()
 
 	if config.Get().Signature {
 		validSignature, err := nav.VerifyMessage(vote.SpendingAddress, vote.Signature, vote.SpendingAddress+vote.Hash+vote.Vote)
@@ -92,7 +92,7 @@ func (r *CommunityFundResource) PostPaymentRequestVote(c *gin.Context) {
 		return
 	}
 
-	nav := navcoin.NewNavcoin(nil)
+	nav := navcoin.NewNavcoin()
 
 	if config.Get().Signature {
 		validSignature, err := nav.VerifyMessage(vote.SpendingAddress, vote.Signature, vote.SpendingAddress+vote.Hash+vote.Vote)
