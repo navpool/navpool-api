@@ -1,4 +1,4 @@
-debug: true
+debug: false
 
 ssl: false
 
@@ -8,12 +8,12 @@ sentry:
   active: false
 
 server:
-  port: 8080
+  port: 8082
 
 db:
   dialect: postgres
   host: localhost
-  port: 54321
+  port: 8432
   username: postgres
   password: password
   dbname: postgres
@@ -24,7 +24,7 @@ Networks:
   - name: mainnet
     host: localhost
     port: 8332
-    username: user
+    username: username
     password: password
     passphrase: passphrase
   - name: testnet
