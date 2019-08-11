@@ -1,4 +1,4 @@
-package model
+package model_user
 
 import (
 	"crypto/rand"
@@ -18,14 +18,14 @@ func UserRepository() *repo {
 	}
 }
 
-func (r *repo) CreateUser(account model.Account) (*User, error) {
+func (r *repo) CreateUser(account model_account.Account) (*User, error) {
 	var user = &User{Account: account.ID, Token: generateToken()}
 	err := r.DB.Create(&user).Error
 
 	return user, err
 }
 
-func (r *repo) GetByToken(account model.Account, token string) (*User, error) {
+func (r *repo) GetByToken(account model_account.Account, token string) (*User, error) {
 	var user = new(User)
 	err := r.DB.Where(&User{Account: account.ID, Token: token}).First(&user).Error
 

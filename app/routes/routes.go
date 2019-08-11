@@ -20,6 +20,7 @@ func Routes() *gin.Engine {
 	addressResource := new(resource.AddressResource)
 	communityFundResource := new(resource.CommunityFundResource)
 	infoResource := new(resource.InfoResource)
+	messageResource := new(resource.MessageResource)
 	userResource := new(resource.UserResource)
 
 	public := r.Group("")
@@ -48,6 +49,8 @@ func Routes() *gin.Engine {
 	private.GET("/community-fund/payment-request/list/:address", communityFundResource.GetPaymentRequestVotes)
 	private.POST("/community-fund/proposal/vote", communityFundResource.PostProposalVote)
 	private.POST("/community-fund/payment-request/vote", communityFundResource.PostPaymentRequestVote)
+
+	private.POST("/message/validate", messageResource.Validate)
 
 	r.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Resource Not Found"})

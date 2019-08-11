@@ -13,7 +13,10 @@ import (
 func main() {
 	setReleaseMode()
 
-	database.CreateConnection()
+	err := database.CreateConnection()
+	if err != nil {
+		log.Fatal(err)
+	}
 	migrations.Migrate()
 
 	if config.Get().Sentry.Active {

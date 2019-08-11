@@ -14,7 +14,7 @@ func UserToken(c *gin.Context) {
 	account := container.Container.Account
 
 	if len(token) != 0 {
-		user, err := model.UserRepository().GetByToken(account, token)
+		user, err := model_user.UserRepository().GetByToken(account, token)
 		if err != nil {
 			log.Printf("Invalid token($%s) for account (%s)", token, account.ID)
 			helpers.HandleError(c, ErrInvalidUserToken, 401)

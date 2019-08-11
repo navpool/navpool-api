@@ -11,7 +11,7 @@ import (
 type InfoResource struct{}
 
 func (r *InfoResource) GetInfo(c *gin.Context) {
-	getInfo, err := navcoin.NewNavcoin(nil).GetInfo()
+	getInfo, err := navcoin.NewNavcoin().GetInfo()
 	if err != nil {
 		helpers.HandleError(c, ErrCouldNotGetInfo, http.StatusBadRequest)
 		return
@@ -21,7 +21,7 @@ func (r *InfoResource) GetInfo(c *gin.Context) {
 }
 
 func (r *InfoResource) GetStakingInfo(c *gin.Context) {
-	getStakingInfo, err := navcoin.NewNavcoin(nil).GetStakingInfo()
+	getStakingInfo, err := navcoin.NewNavcoin().GetStakingInfo()
 	if err != nil {
 		helpers.HandleError(c, ErrCouldNotGetStakingInfo, http.StatusBadRequest)
 		return

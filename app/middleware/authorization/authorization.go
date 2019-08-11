@@ -23,10 +23,10 @@ func Authorization(c *gin.Context) {
 	}
 
 	body, _ := c.GetRawData()
-	message := GetMessage(c.Request.Method, c.Request.RequestURI, GetBodyMd5(body))
+	message := getMessage(c.Request.Method, c.Request.RequestURI, getBodyMd5(body))
 	log.Print(message)
 
-	account, err := model.AccountRepository().GetByUsername(username)
+	account, err := model_account.AccountRepository().GetByUsername(username)
 	if err != nil {
 		log.Printf("Invalid secret (uername:%s)", username)
 		helpers.HandleError(c, ErrAuthenticationFailed, 401)
@@ -65,7 +65,7 @@ func getAuthorization(authHeader string) (username string, digest string, err er
 	return parts[0], parts[1], nil
 }
 
-func GetMessage(method string, uri string, body string) string {
+func getMessage(method string, uri string, body string) string {
 	return strings.Trim(fmt.Sprintf("%s+%s+%s", method, uri, body), "+")
 }
 
@@ -76,7 +76,7 @@ func getExpectedMAC(message string, secret string) []byte {
 	return mac.Sum(nil)
 }
 
-func GetBodyMd5(body []byte) string {
+func getBodyMd5(body []byte) string {
 	hasher := md5.New()
 	hasher.Write(body)
 

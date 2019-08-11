@@ -2,11 +2,13 @@ package navcoin
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/NavPool/navpool-api/app/helpers"
+	uuid "github.com/satori/go.uuid"
 )
 
-func (nav *Navcoin) NewPoolAddress(spendingAddress string) (poolAddress PoolAddress, err error) {
-	response, err := nav.Client.call("newpooladdress", []interface{}{spendingAddress})
+func (nav *Navcoin) CreatePoolAddress(spendingAddress string, uuid uuid.UUID) (poolAddress PoolAddress, err error) {
+	response, err := nav.Client.call("createpooladdress", []interface{}{spendingAddress, uuid.String()})
 	if err = HandleError(err, &response); err != nil {
 		return
 	}
@@ -35,9 +37,10 @@ func (nav *Navcoin) ValidateAddress(spendingAddress string) (validateAddress Val
 }
 
 type PoolAddress struct {
-	SpendingAddress    string `json:"spendingAddress"`
-	StakingAddress     string `json:"stakingAddress"`
-	ColdStakingAddress string `json:"coldStakingAddress"`
+	Uuid               uuid.UUID `json:"uuid"`
+	SpendingAddress    string    `json:"spendingaaddress"`
+	StakingAddress     string    `json:"stakingaddress"`
+	ColdStakingAddress string    `json:"coldstakingaddress"`
 }
 
 type ValidateAddress struct {
@@ -59,3 +62,7 @@ type ValidateAddress struct {
 	HdKeyPath       string `json:"hdkeypath"`
 	HdMasterKey     string `json:"hdmasterkey"`
 }
+
+var (
+	ErrUnableToCreateAddress = errors.New("Unable to create address")
+)

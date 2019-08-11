@@ -1,4 +1,4 @@
-package model
+package model_account
 
 import (
 	"github.com/NavPool/navpool-api/app/database"

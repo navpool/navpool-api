@@ -2,7 +2,9 @@ package navcoin
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/NavPool/navpool-api/app/helpers"
+	model_community_fund "github.com/NavPool/navpool-api/app/model/community_fund"
 )
 
 func (nav *Navcoin) GetProposal(hash string) (proposal Proposal, err error) {
@@ -61,22 +63,22 @@ func (nav *Navcoin) ListPaymentRequestVotes(hash string) (votes []Votes, err err
 	return votes, err
 }
 
-func (nav *Navcoin) ProposalVote(address string, hash string, vote string) (success bool, err error) {
-	response, err := nav.Client.call("poolproposalvote", []interface{}{address, hash, vote})
+func (nav *Navcoin) SetVote(voteType model_community_fund.VoteType, address string, hash string, vote string) (bool, error) {
+	var method string
+	if voteType == model_community_fund.VoteTypeProposal {
+		method = "poolproposalvote"
+	} else if voteType == model_community_fund.VoteTypePaymentRequest {
+		method = "poolpaymentrequestvote"
+	} else {
+		return false, errors.New("Invalid vote type")
+	}
+
+	response, err := nav.Client.call(method, []interface{}{address, hash, vote})
 	if err = HandleError(err, &response); err != nil {
 		return false, err
 	}
 
-	return true, err
-}
-
-func (nav *Navcoin) PaymentRequestVote(address string, hash string, vote string) (success bool, err error) {
-	response, err := nav.Client.call("poolpaymentrequestvote", []interface{}{address, hash, vote})
-	if err = HandleError(err, &response); err != nil {
-		return false, err
-	}
-
-	return true, err
+	return true, nil
 }
 
 type Proposal struct {

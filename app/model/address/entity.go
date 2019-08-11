@@ -1,4 +1,4 @@
-package addressModel
+package model_address
 
 import (
 	"github.com/jinzhu/gorm"
