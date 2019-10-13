@@ -37,8 +37,8 @@ func HandleError(err error, r *rpcResponse) error {
 	}
 
 	if r.Err != nil {
-		raven.CaptureErrorAndWait(err, nil)
 		rr := r.Err.(map[string]interface{})
+		raven.CaptureMessageAndWait(rr["message"].(string), nil)
 		return errors.New(fmt.Sprintf("(%v) %s", rr["code"].(float64), rr["message"].(string)))
 	}
 
