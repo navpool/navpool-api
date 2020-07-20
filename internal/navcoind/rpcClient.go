@@ -3,11 +3,10 @@ package navcoind
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/getsentry/raven-go"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"time"
 )
@@ -32,18 +31,13 @@ type rpcResponse struct {
 	Err    interface{}     `json:"error"`
 }
 
-func newClient(host string, port int, user, password string) (c *rpcClient, err error) {
-	if len(host) == 0 {
-		err = errors.New("bad call missing argument host")
-		return
+func newClient(host string, port int, user, password string) *rpcClient {
+	return &rpcClient{
+		serverAddr: fmt.Sprintf("http://%s:%d", host, port),
+		user:       user,
+		password:   password,
+		httpClient: &http.Client{},
 	}
-
-	var httpClient *http.Client
-	httpClient = &http.Client{}
-
-	c = &rpcClient{serverAddr: fmt.Sprintf("http://%s:%d", host, port), user: user, password: password, httpClient: httpClient}
-
-	return
 }
 
 func (c *rpcClient) call(method string, params interface{}) (rr rpcResponse, err error) {
@@ -57,7 +51,10 @@ func (c *rpcClient) call(method string, params interface{}) (rr rpcResponse, err
 	}
 
 	req, err := http.NewRequest("POST", c.serverAddr, payloadBuffer)
-	log.Printf("Navcoind: Request(%s)", payloadBuffer)
+	log.WithFields(log.Fields{
+		"host":    c.serverAddr,
+		"payload": payloadBuffer,
+	}).Debugf("Navcoind: Request")
 
 	if err != nil {
 		raven.CaptureErrorAndWait(err, nil)
@@ -78,13 +75,16 @@ func (c *rpcClient) call(method string, params interface{}) (rr rpcResponse, err
 	}
 	defer resp.Body.Close()
 
+	log.Debug("Navcoind: Response status: ", resp.StatusCode)
+
 	data, err := ioutil.ReadAll(resp.Body)
-	log.Printf("Navcoind: Response(%s)", data)
 	if err != nil {
+		log.WithError(err).Error("Navcoind: Failed to read response")
 		raven.CaptureErrorAndWait(err, nil)
 		return
 	}
 
+	log.Debugf("Navcoind: Response(%s)", data)
 	err = json.Unmarshal(data, &rr)
 	if err != nil {
 		raven.CaptureErrorAndWait(err, nil)

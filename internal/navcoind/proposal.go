@@ -26,8 +26,8 @@ type Votes struct {
 	Proposals []string
 }
 
-func (nav *Navcoind) ListProposalVotes(hash string) (votes []Votes, err error) {
-	response, err := nav.client.call("poolproposalvotelist", []interface{}{hash})
+func (n *Navcoind) ListProposalVotes(hash string) (votes []Votes, err error) {
+	response, err := n.client.call("poolproposalvotelist", []interface{}{hash})
 	if err = HandleError(err, &response); err != nil {
 		return
 	}
@@ -40,8 +40,8 @@ func (nav *Navcoind) ListProposalVotes(hash string) (votes []Votes, err error) {
 	return votes, err
 }
 
-func (nav *Navcoind) GetProposal(hash string) (proposal Proposal, err error) {
-	response, err := nav.client.call("getproposal", []interface{}{hash})
+func (n *Navcoind) GetProposal(hash string) (proposal Proposal, err error) {
+	response, err := n.client.call("getproposal", []interface{}{hash})
 	if err = HandleError(err, &response); err != nil {
 		return
 	}
@@ -54,8 +54,8 @@ func (nav *Navcoind) GetProposal(hash string) (proposal Proposal, err error) {
 	return proposal, err
 }
 
-func (nav *Navcoind) ProposalVote(address string, hash string, vote string) (success bool, err error) {
-	response, err := nav.client.call("poolproposalvote", []interface{}{address, hash, vote})
+func (n *Navcoind) ProposalVote(address string, hash string, vote string) (success bool, err error) {
+	response, err := n.client.call("poolproposalvote", []interface{}{address, hash, vote})
 	if err = HandleError(err, &response); err != nil {
 		return false, err
 	}

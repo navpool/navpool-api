@@ -19,8 +19,8 @@ type PaymentRequest struct {
 	StateChangedOnBlock string `json:"stateChangedOnBlock"`
 }
 
-func (nav *Navcoind) ListPaymentRequestVotes(hash string) (votes []Votes, err error) {
-	response, err := nav.client.call("poolpaymentrequestvotelist", []interface{}{hash})
+func (n *Navcoind) ListPaymentRequestVotes(hash string) (votes []Votes, err error) {
+	response, err := n.client.call("poolpaymentrequestvotelist", []interface{}{hash})
 	if err = HandleError(err, &response); err != nil {
 		return
 	}
@@ -33,8 +33,8 @@ func (nav *Navcoind) ListPaymentRequestVotes(hash string) (votes []Votes, err er
 	return votes, err
 }
 
-func (nav *Navcoind) GetPaymentRequest(hash string) (paymentRequest PaymentRequest, err error) {
-	response, err := nav.client.call("getpaymentrequest", []interface{}{hash})
+func (n *Navcoind) GetPaymentRequest(hash string) (paymentRequest PaymentRequest, err error) {
+	response, err := n.client.call("getpaymentrequest", []interface{}{hash})
 	if err = HandleError(err, &response); err != nil {
 		return
 	}
@@ -47,8 +47,8 @@ func (nav *Navcoind) GetPaymentRequest(hash string) (paymentRequest PaymentReque
 	return paymentRequest, err
 }
 
-func (nav *Navcoind) PaymentRequestVote(address string, hash string, vote string) (success bool, err error) {
-	response, err := nav.client.call("poolpaymentrequestvote", []interface{}{address, hash, vote})
+func (n *Navcoind) PaymentRequestVote(address string, hash string, vote string) (success bool, err error) {
+	response, err := n.client.call("poolpaymentrequestvote", []interface{}{address, hash, vote})
 	if err = HandleError(err, &response); err != nil {
 		return false, err
 	}

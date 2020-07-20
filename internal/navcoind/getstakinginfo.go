@@ -2,7 +2,7 @@ package navcoind
 
 import (
 	"encoding/json"
-	"github.com/NavPool/navpool-api/logger"
+	log "github.com/sirupsen/logrus"
 )
 
 type StakingInfo struct {
@@ -18,15 +18,15 @@ type StakingInfo struct {
 	ExpectedTime     int     `json:"expectedtime"`
 }
 
-func (nav *Navcoind) GetStakingInfo() (stakingInfo StakingInfo, err error) {
-	response, err := nav.client.call("getstakinginfo", nil)
+func (n *Navcoind) GetStakingInfo() (stakingInfo *StakingInfo, err error) {
+	response, err := n.client.call("getstakinginfo", nil)
 	if err = HandleError(err, &response); err != nil {
 		return
 	}
 
 	err = json.Unmarshal(response.Result, &stakingInfo)
 	if err != nil {
-		logger.LogError(err)
+		log.WithError(err).Error("Failed to unmarshall staking info")
 	}
 
 	return
