@@ -5,8 +5,8 @@ import (
 	"github.com/getsentry/raven-go"
 )
 
-func (nav *Navcoind) VerifyMessage(address string, signature string, message string) (valid bool, err error) {
-	response, err := nav.client.call("verifymessage", []interface{}{address, signature, message})
+func (n *Navcoind) VerifyMessage(address string, signature string, message string) (valid bool, err error) {
+	response, err := n.client.call("verifymessage", []interface{}{address, signature, message})
 	if err = HandleError(err, &response); err != nil {
 		return false, err
 	}

@@ -33,8 +33,8 @@ type CommunityFund struct {
 	Locked    float64 `json:"locked"`
 }
 
-func (nav *Navcoind) GetInfo() (info Info, err error) {
-	response, err := nav.client.call("getinfo", nil)
+func (n *Navcoind) GetInfo() (info *Info, err error) {
+	response, err := n.client.call("getinfo", nil)
 	if err = HandleError(err, &response); err != nil {
 		return
 	}

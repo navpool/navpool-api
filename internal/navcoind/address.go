@@ -14,25 +14,24 @@ type PoolAddress struct {
 type ValidateAddress struct {
 	Valid           bool   `json:"isvalid"`
 	Address         string `json:"address"`
+	ScriptPubKey    string `json:"scriptpubkey"`
 	StakingAddress  string `json:"stakingaddress"`
 	SpendingAddress string `json:"spendingaddress"`
-	ScriptPubKey    string `json:"scriptpubkey"`
+	VotingAddress   string `json:"votingaddress"`
 	Mine            bool   `json:"ismine"`
 	Stakeable       bool   `json:"isstakeable"`
 	WatchOnly       bool   `json:"iswatchonly"`
 	Script          bool   `json:"isscript"`
 	ColdStaking     bool   `json:"iscoldstaking"`
 	PubKey          string `json:"pubkey"`
-	StakingPubKey   string `json:"stakingpubkey"`
-	SpendingPubKey  string `json:"spendingpubkey"`
 	Compressed      bool   `json:"iscompressed"`
 	Account         string `json:"account"`
 	HdKeyPath       string `json:"hdkeypath"`
 	HdMasterKey     string `json:"hdmasterkey"`
 }
 
-func (nav *Navcoind) GetPoolAddress(spendingAddress string) (poolAddress PoolAddress, err error) {
-	response, err := nav.client.call("newpooladdress", []interface{}{spendingAddress})
+func (n *Navcoind) GetPoolAddress(spendingAddress string) (poolAddress *PoolAddress, err error) {
+	response, err := n.client.call("newpooladdress", []interface{}{spendingAddress})
 	if err = HandleError(err, &response); err != nil {
 		return
 	}
@@ -45,8 +44,8 @@ func (nav *Navcoind) GetPoolAddress(spendingAddress string) (poolAddress PoolAdd
 	return
 }
 
-func (nav *Navcoind) GetValidateAddress(spendingAddress string) (validateAddress ValidateAddress, err error) {
-	response, err := nav.client.call("validateaddress", []interface{}{spendingAddress})
+func (n *Navcoind) GetValidateAddress(spendingAddress string) (validateAddress *ValidateAddress, err error) {
+	response, err := n.client.call("validateaddress", []interface{}{spendingAddress})
 	if err = HandleError(err, &response); err != nil {
 		return
 	}
