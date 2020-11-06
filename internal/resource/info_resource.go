@@ -2,7 +2,7 @@ package resource
 
 import (
 	"errors"
-	"github.com/NavPool/navpool-api/error"
+	"github.com/NavPool/navpool-api/internal/framework/error"
 	"github.com/NavPool/navpool-api/internal/service"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"

@@ -1,7 +1,7 @@
 package resource
 
 import (
-	"github.com/NavPool/navpool-api/error"
+	"github.com/NavPool/navpool-api/internal/framework/error"
 	"github.com/NavPool/navpool-api/internal/service"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -33,7 +33,7 @@ func (r *DaoResource) GetVotes(c *gin.Context) {
 			if err == service.ErrProposalNotValid {
 				error.HandleError(c, err, http.StatusBadRequest)
 			} else {
-				error.HandleError(c, service.ErrUnableToCastVote, http.StatusInternalServerError)
+				error.HandleError(c, service.ErrUnableToRetrieveVotes, http.StatusInternalServerError)
 			}
 			return
 		}
@@ -47,7 +47,7 @@ func (r *DaoResource) GetVotes(c *gin.Context) {
 			if err == service.ErrProposalNotValid {
 				error.HandleError(c, err, http.StatusBadRequest)
 			} else {
-				error.HandleError(c, service.ErrUnableToCastVote, http.StatusInternalServerError)
+				error.HandleError(c, service.ErrUnableToRetrieveVotes, http.StatusInternalServerError)
 			}
 			return
 		}

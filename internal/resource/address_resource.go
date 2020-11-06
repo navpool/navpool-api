@@ -2,8 +2,8 @@ package resource
 
 import (
 	b64 "encoding/base64"
-	"github.com/NavPool/navpool-api/error"
 	"github.com/NavPool/navpool-api/internal/config"
+	"github.com/NavPool/navpool-api/internal/framework/error"
 	"github.com/NavPool/navpool-api/internal/service"
 	"github.com/gin-gonic/gin"
 	"log"
