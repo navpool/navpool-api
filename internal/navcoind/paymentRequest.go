@@ -19,7 +19,7 @@ type PaymentRequest struct {
 	StateChangedOnBlock string `json:"stateChangedOnBlock"`
 }
 
-func (n *Navcoind) ListPaymentRequestVotes(hash string) (votes []Votes, err error) {
+func (n *Navcoind) ListPaymentRequestVotes(hash string) (votes *Votes, err error) {
 	response, err := n.client.call("poolpaymentrequestvotelist", []interface{}{hash})
 	if err = HandleError(err, &response); err != nil {
 		return

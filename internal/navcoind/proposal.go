@@ -3,6 +3,7 @@ package navcoind
 import (
 	"encoding/json"
 	"github.com/getsentry/raven-go"
+	log "github.com/sirupsen/logrus"
 )
 
 type Proposal struct {
@@ -23,15 +24,18 @@ type Proposal struct {
 }
 
 type Votes struct {
-	Proposals []string
+	Yes     []string `json:"yes"`
+	No      []string `json:"no"`
+	Abstain []string `json:"abs"`
 }
 
-func (n *Navcoind) ListProposalVotes(hash string) (votes []Votes, err error) {
+func (n *Navcoind) ListProposalVotes(hash string) (votes *Votes, err error) {
 	response, err := n.client.call("poolproposalvotelist", []interface{}{hash})
 	if err = HandleError(err, &response); err != nil {
 		return
 	}
 
+	log.Info(string(response.Result))
 	err = json.Unmarshal(response.Result, &votes)
 	if err != nil {
 		raven.CaptureErrorAndWait(err, nil)
