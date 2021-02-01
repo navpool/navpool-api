@@ -6,20 +6,26 @@ import (
 )
 
 type Proposal struct {
-	Version          int     `json:"version"`
-	Hash             string  `json:"hash"`
-	BlockHash        string  `json:"blockHash"`
-	Description      string  `json:"description"`
-	RequestedNav     float64 `json:"requestNav"`
-	NotPaidYet       string  `json:"notPaidYet"`
-	UserPaidFee      string  `json:"userPaidFee"`
-	PaymentAddress   string  `json:"paymentAddress"`
-	ProposalDuration int     `json:"proposalDuration"`
-	VotesYes         int     `json:"votesYes"`
-	VotesNo          int     `json:"votesNo"`
-	VotingCycle      int     `json:"votingCycle"`
-	Status           string  `json:"status"`
-	State            int     `json:"state"`
+	Version             int              `json:"version"`
+	Hash                string           `json:"hash"`
+	BlockHash           string           `json:"blockHash"`
+	Description         string           `json:"description"`
+	RequestedAmount     string           `json:"requestedAmount"`
+	NotPaidYet          string           `json:"notPaidYet"`
+	NotRequestedYet     string           `json:"notRequestedYet"`
+	UserPaidFee         string           `json:"userPaidFee"`
+	OwnerAddress        string           `json:"ownerAddress"`
+	PaymentAddress      string           `json:"paymentAddress"`
+	ProposalDuration    uint64           `json:"proposalDuration"`
+	ExpiresOn           uint64           `json:"expiresOn"`
+	VotesYes            uint             `json:"votesYes"`
+	VotesAbs            uint             `json:"votesAbs"`
+	VotesNo             uint             `json:"votesNo"`
+	VotingCycle         uint             `json:"votingCycle"`
+	Status              string           `json:"status"`
+	State               uint             `json:"state"`
+	StateChangedOnBlock string           `json:"stateChangedOnBlock,omitempty"`
+	PaymentRequests     []PaymentRequest `json:"paymentRequests"`
 }
 
 type Votes struct {

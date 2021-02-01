@@ -6,16 +6,17 @@ import (
 )
 
 type StakingInfo struct {
-	Enabled          bool    `json:"enabled"`
-	Staking          bool    `json:"staking"`
-	Errors           string  `json:"errors"`
-	CurrentBlockSize int     `json:"currentblocksize"`
-	CurrentBlockTx   int     `json:"currentblocktx"`
-	Difficulty       float64 `json:"difficulty"`
-	SearchInterval   int     `json:"search-interval"`
-	Weight           int     `json:"weight"`
-	NetStakeWeight   int     `json:"netstakeweight"`
-	ExpectedTime     int     `json:"expectedtime"`
+	Enabled             bool    `json:"enabled"`
+	Staking             bool    `json:"staking"`
+	Errors              string  `json:"errors"`
+	CurrentBlockSize    int     `json:"currentblocksize"`
+	CurrentBlockTx      int     `json:"currentblocktx"`
+	Difficulty          float64 `json:"difficulty"`
+	SearchInterval      int     `json:"search-interval"`
+	Weight              int     `json:"weight"`
+	NetStakeWeight      int     `json:"netstakeweight"`
+	ExpectedTime        int     `json:"expectedtime"`
+	ExpectedDailyReward float64 `json:"expecteddailyreward"`
 }
 
 func (nav *Navcoind) GetStakingInfo() (stakingInfo StakingInfo, err error) {

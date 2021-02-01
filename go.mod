@@ -9,6 +9,7 @@ require (
 	github.com/gin-contrib/gzip v0.0.1
 	github.com/gin-gonic/gin v1.4.0
 	github.com/pkg/errors v0.8.1 // indirect
+	github.com/sarulabs/dingo/v3 v3.1.0 // indirect
 	github.com/spf13/viper v1.3.2
 )
 
