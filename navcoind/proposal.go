@@ -10,9 +10,11 @@ type Proposal struct {
 	Hash             string  `json:"hash"`
 	BlockHash        string  `json:"blockHash"`
 	Description      string  `json:"description"`
-	RequestedNav     float64 `json:"requestNav"`
+	RequestedAmount  float64 `json:"requestedAmount"`
 	NotPaidYet       string  `json:"notPaidYet"`
+	NotRequestedYet  string  `json:"notRequestedYet"`
 	UserPaidFee      string  `json:"userPaidFee"`
+	OwnerAddress     string  `json:"ownerAddress"`
 	PaymentAddress   string  `json:"paymentAddress"`
 	ProposalDuration int     `json:"proposalDuration"`
 	VotesYes         int     `json:"votesYes"`

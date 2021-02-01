@@ -9,10 +9,13 @@ type PaymentRequest struct {
 	Version             int    `json:"version"`
 	Hash                string `json:"hash"`
 	BlockHash           string `json:"blockHash"`
+	ProposalHash        string `json:"proposalHash"`
 	Description         string `json:"description"`
 	RequestedAmount     string `json:"requestedAmount"`
 	VotesYes            int    `json:"votesYes"`
+	VotesAbs            int    `json:"votesAbs"`
 	VotesNo             int    `json:"votesNo"`
+	ExcludedVotes       int    `json:"excludedVotes"`
 	VotingCycle         int    `json:"votingCycle"`
 	Status              string `json:"status"`
 	State               int    `json:"state"`
